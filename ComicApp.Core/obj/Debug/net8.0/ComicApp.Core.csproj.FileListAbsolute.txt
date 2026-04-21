@@ -10,3 +10,4 @@ C:\Users\Amann\source\repos\ASP.Net Refactor\ComicApp.Core\obj\Debug\net8.0\Comi
 C:\Users\Amann\source\repos\ASP.Net Refactor\ComicApp.Core\obj\Debug\net8.0\refint\ComicApp.Core.dll
 C:\Users\Amann\source\repos\ASP.Net Refactor\ComicApp.Core\obj\Debug\net8.0\ComicApp.Core.pdb
 C:\Users\Amann\source\repos\ASP.Net Refactor\ComicApp.Core\obj\Debug\net8.0\ref\ComicApp.Core.dll
+C:\Users\Amann\source\repos\ASP.Net Refactor\ComicApp.Core\obj\Debug\net8.0\ComicApp.Core.sourcelink.json

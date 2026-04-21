@@ -156,3 +156,6 @@ C:\Users\Amann\source\repos\ASP.Net Refactor\ComicApp.Tests\obj\Debug\net8.0\ref
 C:\Users\Amann\source\repos\ASP.Net Refactor\ComicApp.Tests\obj\Debug\net8.0\ComicApp.Tests.pdb
 C:\Users\Amann\source\repos\ASP.Net Refactor\ComicApp.Tests\obj\Debug\net8.0\ComicApp.Tests.genruntimeconfig.cache
 C:\Users\Amann\source\repos\ASP.Net Refactor\ComicApp.Tests\obj\Debug\net8.0\ref\ComicApp.Tests.dll
+C:\Users\Amann\source\repos\ASP.Net Refactor\ComicApp.Tests\obj\Debug\net8.0\ComicApp.Tests.sourcelink.json
+C:\Users\Amann\source\repos\ASP.Net Refactor\ComicApp.Tests\bin\Debug\net8.0\SendGrid.dll
+C:\Users\Amann\source\repos\ASP.Net Refactor\ComicApp.Tests\bin\Debug\net8.0\StarkbankEcdsa.dll
