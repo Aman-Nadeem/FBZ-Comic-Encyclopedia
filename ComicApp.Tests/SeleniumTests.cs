@@ -205,7 +205,6 @@ namespace ComicApp.Tests
         {
             string staffUser = $"staff{Guid.NewGuid().ToString().Substring(0, 5)}";
 
-            // Register staff user
             _driver.Navigate().GoToUrl($"{_baseUrl}/Account/Register");
             _driver.FindElement(By.Name("username")).SendKeys(staffUser);
             _driver.FindElement(By.Name("password")).SendKeys("password123");
@@ -213,19 +212,15 @@ namespace ComicApp.Tests
             roleDropdown.SelectByValue("Staff");
             _driver.FindElement(By.CssSelector("button[type='submit']")).Click();
 
-            // Wait for redirect to login page
             var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
             wait.Until(d => d.Url.Contains("Login"));
 
-            // Login
             _driver.FindElement(By.Name("username")).SendKeys(staffUser);
             _driver.FindElement(By.Name("password")).SendKeys("password123");
             _driver.FindElement(By.CssSelector("button[type='submit']")).Click();
 
-            // Wait for redirect to Comics page
             wait.Until(d => d.Url.Contains("Comics"));
 
-            // Navigate to reports
             _driver.Navigate().GoToUrl($"{_baseUrl}/Comics/Reports");
 
             wait.Until(d => d.FindElement(By.TagName("body")));
@@ -263,6 +258,66 @@ namespace ComicApp.Tests
             wait.Until(d => d.FindElement(By.TagName("body")));
             var body = _driver.FindElement(By.TagName("body")).Text;
             Assert.Contains("Saved", body);
+        }
+
+        // COMICVINE SEARCH PAGE LOADS
+        [Fact]
+        public void ComicVinePage_Loads_Successfully()
+        {
+            _driver.Navigate().GoToUrl($"{_baseUrl}/ComicVine/Search");
+            Assert.Contains("ComicVine", _driver.Title);
+        }
+
+        // COMICVINE SEARCH RETURNS RESULTS
+        [Fact]
+        public void ComicVineSearch_ValidQuery_ReturnsResults()
+        {
+            _driver.Navigate().GoToUrl($"{_baseUrl}/ComicVine/Search?query=batman");
+
+            var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(15));
+            wait.Until(d => d.FindElement(By.TagName("body")));
+
+            var body = _driver.FindElement(By.TagName("body")).Text;
+            Assert.Contains("Batman", body);
+        }
+
+        // OPEN LIBRARY SEARCH PAGE LOADS
+        [Fact]
+        public void OpenLibraryPage_Loads_Successfully()
+        {
+            _driver.Navigate().GoToUrl($"{_baseUrl}/OpenLibrary/Search");
+            Assert.Contains("Open Library", _driver.Title);
+        }
+
+        // OPEN LIBRARY SEARCH RETURNS RESULTS
+        [Fact]
+        public void OpenLibrarySearch_ValidQuery_ReturnsResults()
+        {
+            _driver.Navigate().GoToUrl($"{_baseUrl}/OpenLibrary/Search?query=batman");
+
+            var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(15));
+            wait.Until(d => d.FindElement(By.TagName("body")));
+
+            var body = _driver.FindElement(By.TagName("body")).Text;
+            Assert.Contains("Batman", body);
+        }
+
+        // NAV CONTAINS COMICVINE LINK
+        [Fact]
+        public void Navigation_ContainsComicVineLink()
+        {
+            _driver.Navigate().GoToUrl($"{_baseUrl}");
+            var nav = _driver.FindElement(By.TagName("nav")).Text;
+            Assert.Contains("ComicVine", nav);
+        }
+
+        // NAV CONTAINS OPEN LIBRARY LINK
+        [Fact]
+        public void Navigation_ContainsOpenLibraryLink()
+        {
+            _driver.Navigate().GoToUrl($"{_baseUrl}");
+            var nav = _driver.FindElement(By.TagName("nav")).Text;
+            Assert.Contains("Open Library", nav);
         }
     }
 }
