@@ -1,0 +1,31 @@
+﻿@model IEnumerable<ComicApp.Core.Models.FlaggedComic>
+
+@{
+    ViewData["Title"] = "Flagged Comics";
+}
+
+<h1>Flagged Comics</h1>
+
+<a asp-controller="Comics" asp-action="Index" class="btn btn-secondary mb-3">
+    Back to Comics
+</a>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Comic ID</th>
+            <th>Flagged By</th>
+            <th>Flagged At</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var flag in Model)
+        {
+            <tr>
+                <td>@flag.ComicId</td>
+                <td>@flag.FlaggedBy</td>
+                <td>@flag.FlaggedAt</td>
+            </tr>
+        }
+    </tbody>
+</table>
