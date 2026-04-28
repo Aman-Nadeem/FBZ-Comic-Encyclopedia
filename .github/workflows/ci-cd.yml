@@ -26,13 +26,17 @@ jobs:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
       - name: Restore dependencies
-        run: dotnet restore
+        run: |
+          dotnet restore ComicApp.Core/ComicApp.Core.csproj
+          dotnet restore ComicApp.Web/ComicApp.Web.csproj
+          dotnet restore ComicApp.API/ComicApp.API.csproj
+          dotnet restore ComicApp.Tests/ComicApp.Tests.csproj
 
       - name: Build solution
-        run: dotnet build --no-restore --configuration Release
+        run: dotnet build ComicApp.Web/ComicApp.Web.csproj --no-restore --configuration Release
 
       - name: Run tests
-        run: dotnet test --no-build --configuration Release --verbosity normal
+        run: dotnet test ComicApp.Tests/ComicApp.Tests.csproj --configuration Release --verbosity normal
 
   docker-build-push:
     name: Docker Build and Push to ACR
