@@ -1,0 +1,112 @@
+name: FBZ Comic Encyclopedia CI/CD
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+env:
+  ACR_REGISTRY: fbzcomicregistry.azurecr.io
+  IMAGE_NAME: comicapp-web
+  DOTNET_VERSION: '8.0.x'
+
+jobs:
+  build-and-test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Restore dependencies
+        run: |
+          dotnet restore ComicApp.Core/ComicApp.Core.csproj
+          dotnet restore ComicApp.Web/ComicApp.Web.csproj
+          dotnet restore ComicApp.API/ComicApp.API.csproj
+          dotnet restore ComicApp.Tests/ComicApp.Tests.csproj
+
+      - name: Build solution
+        run: dotnet build ComicApp.Web/ComicApp.Web.csproj --no-restore --configuration Release
+
+      - name: Run tests
+        run: dotnet test ComicApp.Tests/ComicApp.Tests.csproj --configuration Release --verbosity normal
+
+  docker-build-push:
+    name: Docker Build and Push to ACR
+    runs-on: ubuntu-latest
+    needs: build-and-test
+    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Log in to ACR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.ACR_REGISTRY }}
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: |
+            ${{ env.ACR_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+            ${{ env.ACR_REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+
+  deploy:
+    name: Deploy to Azure Container Instance
+    runs-on: ubuntu-latest
+    needs: docker-build-push
+
+    steps:
+      - name: Log in to Azure
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Deploy to Azure Container Instance
+        uses: azure/cli@v2
+        with:
+          azcliversion: latest
+          inlineScript: |
+            az container delete \
+              --resource-group fbz-rg \
+              --name fbz-web \
+              --yes 2>/dev/null || true
+
+            az container create \
+              --resource-group fbz-rg \
+              --name fbz-web \
+              --image ${{ env.ACR_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }} \
+              --cpu 1 \
+              --memory 1 \
+              --os-type Linux \
+              --registry-login-server ${{ env.ACR_REGISTRY }} \
+              --registry-username ${{ secrets.ACR_USERNAME }} \
+              --registry-password ${{ secrets.ACR_PASSWORD }} \
+              --dns-name-label fbz-web-aman \
+              --ports 8080 \
+              --location eastus
+
+      - name: Azure logout
+        run: az logout
+        if: always()
