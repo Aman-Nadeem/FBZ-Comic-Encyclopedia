@@ -1,0 +1,55 @@
+﻿@{
+    ViewData["Title"] = "Reports";
+}
+
+<h1>Analytics Reports</h1>
+
+<a asp-action="Index" class="btn btn-secondary mb-3">Back to Comics</a>
+
+<h2>Top 10 Search Queries</h2>
+
+@if (ViewBag.TopQueries != null)
+{
+    <ul>
+        @foreach (var q in (IEnumerable<(string Query, int Count)>)ViewBag.TopQueries)
+        {
+            <li>@q.Query — @q.Count searches</li>
+        }
+    </ul>
+}
+else
+{
+     <p>No search data yet.</p>
+}
+
+<h2>Top 10 Returned Comics</h2>
+
+@if (ViewBag.TopResults != null)
+{
+    <ul>
+        @foreach (var r in (IEnumerable<(string ComicId, int Count)>)ViewBag.TopResults)
+        {
+            <li>@r.ComicId — @r.Count results</li>
+        }
+    </ul>
+}
+else
+{
+     <p>No result data yet.</p>
+}
+
+<h2>Comics appearing in more than 100 searches</h2>
+
+@if (ViewBag.FrequentComics != null)
+{
+    <ul>
+        @foreach (var c in (IEnumerable<string>)ViewBag.FrequentComics)
+        {
+            <li>@c</li>
+        }
+    </ul>
+}
+else
+{
+     <p>No comics exceed 100 appearances yet.</p>
+}

@@ -1,0 +1,12 @@
+﻿@model IEnumerable<ComicApp.Core.Models.SavedSearch>
+
+<h1>Saved Searches</h1>
+
+<a asp-action="Index">Back</a>
+
+<ul>
+    @foreach (var s in Model)
+    {
+        <li>@s.Query - @s.Created</li>
+    }
+</ul>

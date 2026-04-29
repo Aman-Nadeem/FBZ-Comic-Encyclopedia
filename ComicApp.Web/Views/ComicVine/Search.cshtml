@@ -1,0 +1,43 @@
+﻿@model List<ComicApp.Core.Services.ComicVineResult>
+
+@{
+    ViewData["Title"] = "ComicVine Search";
+}
+
+<h2>ComicVine Search</h2>
+
+<form method="get" asp-action="Search" asp-controller="ComicVine">
+    <div class="input-group mb-3">
+        <input type="text" name="query" value="@ViewBag.Query" class="form-control" placeholder="Search ComicVine..." />
+        <button class="btn btn-primary" type="submit">Search</button>
+    </div>
+</form>
+
+@if (Model != null && Model.Any())
+{
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    @if (item.Image?.MediumUrl != null)
+                    {
+                        <img src="@item.Image.MediumUrl" class="card-img-top" alt="@item.Name" />
+                    }
+                    <div class="card-body">
+                        <h5 class="card-title">@item.Name</h5>
+                        <p class="card-text">@item.Deck</p>
+                        @if (item.SiteDetailUrl != null)
+                        {
+                            <a href="@item.SiteDetailUrl" target="_blank" class="btn btn-sm btn-outline-secondary">View on ComicVine</a>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else if (ViewBag.Query != null)
+{
+    <p>No results found for "@ViewBag.Query".</p>
+}
