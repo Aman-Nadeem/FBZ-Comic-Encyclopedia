@@ -6,7 +6,7 @@ COPY ComicApp.Web/ComicApp.Web.csproj ./ComicApp.Web/
 COPY ComicApp.API/ComicApp.API.csproj ./ComicApp.API/
 COPY ComicApp.Tests/ComicApp.Tests.csproj ./ComicApp.Tests/
 
-RUN dotnet restore ComicApp.Web/ComicApp.Web.csproj
+RUN dotnet restore ComicApp.Web/ComicApp.Web.csproj --runtime linux-x64
 
 COPY . .
 
