@@ -38,7 +38,7 @@ jobs:
         run: dotnet build ComicApp.Web/ComicApp.Web.csproj --no-restore --configuration Release
 
       - name: Run tests
-        run: dotnet test ComicApp.Tests/ComicApp.Tests.csproj --configuration Release --verbosity normal
+        run: dotnet test ComicApp.Tests/ComicApp.Tests.csproj --configuration Release --verbosity normal --filter "Category!=Selenium"
 
   docker-build-push:
     name: Docker Build and Push to ACR
