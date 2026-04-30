@@ -27,7 +27,7 @@ RUN groupadd --system appgroup && \
     useradd --system --gid appgroup --no-create-home appuser
 
 COPY --from=build /app/publish .
-RUN chown -R appuser:appgroup /app
+RUN mkdir -p /app/data && chown -R appuser:appgroup /app
 USER appuser
 
 EXPOSE 8080
