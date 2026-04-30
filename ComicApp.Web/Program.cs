@@ -1,4 +1,4 @@
-﻿using ComicApp.Core.Interfaces;
+using ComicApp.Core.Interfaces;
 using ComicApp.Core.Repositories;
 using ComicApp.Core.Services;
 using ComicApp.Core.DataAccess;
@@ -20,9 +20,9 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-// Entity Framework Database Context
+// Entity Framework Database Context - SQLite for cloud deployment
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Core data repository
 builder.Services.AddScoped<IComicRepository, ComicRepository>();
@@ -74,6 +74,13 @@ builder.Services.AddScoped<EmailService>(sp =>
 });
 
 var app = builder.Build();
+
+// Auto-create SQLite database on startup
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.EnsureCreated();
+}
 
 // Error handling
 if (!app.Environment.IsDevelopment())
